@@ -10,13 +10,12 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 class PovertySpider(scrapy.Spider):
     name = "poverty"
     allowed_domains = ["http://price.scnjw.gov.cn/pas/price.do?method=priceInfoList"]
-    start_urls = ["http://price.scnjw.gov.cn/pas/price.do?method=priceInfoList&pageNo=1"]
-    # rules = [
-    #     Rule(SgmlLinkExtractor(allow=
-    #                            (r'http://price.scnjw.gov.cn/pas/price.do?method=priceInfoList&pageNo=\d'))),
-    #     Rule(SgmlLinkExtractor(allow=
-    #                            (r'http://price.scnjw.gov.cn/pas/price.do?method=priceInfoList&pageNo=\d+')), callback="parse_item"),
-    # # ]          "//*[@id="box"]/table/tbody"
+    #rules 解析出错 采用循环遍历url,共有 106124 页 | 每页显示 10 15 30 条数据 | 共有2122480条记录
+    start_urls = []
+    for i in range(1, 2):
+        item = "http://price.scnjw.gov.cn/pas/price.do?method=priceInfoList&pageNo=" + str(i)
+        start_urls.append(item)
+
 
     def parse(self, response):
         row = response.xpath('//table/tbody/tr')
@@ -27,5 +26,6 @@ class PovertySpider(scrapy.Spider):
             item["unit"] = row[i].xpath('./td[3]/text()').extract()[0]
             item["price"] = row[i].xpath('./td[4]/text()').extract()[0]
             item["manufacturer"] = row[i].xpath('./td[5]/a/text()').extract()[0]
+            item["time"] = row[i].xpath('./td[6]/text()').extract()[0]
             yield item
             print item

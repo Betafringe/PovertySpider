@@ -9,3 +9,8 @@ import requests
 # #     tmp.append(row[i].xpath('./td[1]/a/text()').extract()[0])
 # #     tmp.extend(row[i].xpath('./td/text()').extract())
 # #     data.append(tmp)
+
+start_urls = []
+for i in range(1, 100):
+    item = "http://price.scnjw.gov.cn/pas/price.do?method=priceInfoList&pageNo=" + str(i)
+    start_urls.append(item)
